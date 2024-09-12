@@ -3,15 +3,14 @@ import swaggerUi from "swagger-ui-express";
 import * as swaggerDocument from "./docs/swagger.json"; // Adjust path based on the src directory
 import { RegisterRoutes } from "./routes/v1/routes";
 import dotenv from "dotenv";
-import connectDB from "./configs/database";
+import connectToMongoDB from "./database/connection";
+import configs from "./config";
 
-dotenv.config();
-const PORT = process.env.PORT;
+dotenv.config()
 
 const app = express();
 
 app.use(express.json());
-connectDB();
 
 // Serve Swagger UI at /docs
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -20,6 +19,17 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 RegisterRoutes(app);
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
+async function run() {
+  try {
+    await connectToMongoDB()
+    app.listen(configs.port, () => {
+      console.log(`server running port ${configs.port}`);
+      console.log("----------------------------------------------------")
+    })
+  } catch (error) {
+    console.error(error);
+    process.exit(1)
+  }
+}
+
+run();
