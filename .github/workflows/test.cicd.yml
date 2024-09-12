@@ -1,0 +1,47 @@
+name: CI/CD Pipeline for Service
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'  # Adjust to match the path where your source code resides
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'  # Adjust to match the path where your source code resides
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Specifies that the job runs on the latest Ubuntu version
+
+    defaults:
+      run:
+        working-directory: ./  # Set to the root directory of your project
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4  # Checkout the code in the repository
+        with:
+          fetch-depth: 0  # Fetches all tags and branches for versioning purposes
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4  # Set up Node.js environment
+        with:
+          node-version: '20'  # Specify the Node.js version you need
+
+      - name: Install dependencies
+        run: yarn install  # Install dependencies from package.json
+
+      - name: Run build
+        run: yarn build  # Run the build process
+
+      - name: Run tests
+        env:
+          API_KEY: ${{ secrets.API_KEY }}  # Fetch a custom API key from GitHub Secrets
+        run: yarn test  # Run the tests as defined in your package.json
+
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4  # Upload build artifacts for later steps
+        with:
+          name: build-artifacts  # Name the artifact
+          path: ./dist  # Adjust to the path where your build outputs artifacts, commonly 'dist' or 'build'
