@@ -46,7 +46,7 @@ jobs:
           name: build-artifacts
           path: ./dist # Adjust to the path where your build outputs artifacts, commonly 'dist' or 'build'
 
-  # deployment
+  # Deployment step
   deploy:
     runs-on: ubuntu-latest
     needs: build # Ensure the deploy job only runs after the build job completes successfully
