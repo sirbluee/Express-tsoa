@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: ./dist # Ensure the build output directory is correct and exists
+          path: ./build # Ensure the build output directory is correct and exists
 
   # Deployment step
   deploy:
