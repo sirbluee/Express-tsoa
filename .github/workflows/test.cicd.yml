@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: ./dist # Adjust to the path where your build outputs artifacts, commonly 'dist' or 'build'
+          path: ./dist # Ensure the build output directory is correct and exists
 
   # Deployment step
   deploy:
@@ -59,7 +59,7 @@ jobs:
         uses: actions/download-artifact@v4 # Downloads artifacts from the build job
         with:
           name: build-artifacts # The name of the artifact from the build job
-          path: ./path/to/artifacts # The path where the artifacts will be downloaded
+          path: ./artifacts # The path where the artifacts will be downloaded
 
       - name: Prepare Deployment Directories
         uses: appleboy/ssh-action@master # SSH into the server to prepare directories
@@ -79,7 +79,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "./path/to/artifacts/*"
+          source: "./artifacts/*"
           target: "/home/ubuntu/apps/build"
           strip_components: 1 # Adjust based on the directory depth of the source
 
