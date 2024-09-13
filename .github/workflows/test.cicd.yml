@@ -75,7 +75,7 @@ jobs:
           script: |
             echo "NODE_ENV=production" > /home/ubuntu/apps/build/configs/.env.production
             echo "PORT=${{ secrets.PORT }}" >> /home/ubuntu/apps/build/configs/.env.production
-            echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> /home/ubuntu/apps/build/configs/.env.production
+            echo "MONGODB_URL=${{ secrets.MONGODB_URL}}" >> /home/ubuntu/apps/build/configs/.env.production
 
       - name: Install Dependencies and Restart Application
         uses: appleboy/ssh-action@master
@@ -85,7 +85,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            set -e
             # Ensure NVM is installed
             if [ ! -f /home/ubuntu/.nvm/nvm.sh ]; then
               echo "NVM not found. Installing NVM..."
@@ -123,6 +122,7 @@ jobs:
             # Install production dependencies
             yarn install --production
 
+
             # Restart or start the application
             if pm2 show product-service > /dev/null; then
               echo "Application is running. Restarting..."
@@ -131,6 +131,3 @@ jobs:
               echo "Application is not running. Starting..."
               pm2 start server.js --name product-service
             fi
-
-      - name: Cleanup SSH Key
-        run: rm ~/.ssh/id_rsa
