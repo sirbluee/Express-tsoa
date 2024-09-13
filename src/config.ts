@@ -13,6 +13,8 @@ function loadConfig(): Config {
   // Determine the environment and set the appropriate .env file
   const env = process.env.NODE_ENV || 'development';
   const envPath = path.resolve(__dirname, `./configs/.env.${env}`);
+  console.log("----------------------------------------------------------------")
+  console.log("envPath: " + envPath);
   dotenv.config({ path: envPath });
 
   // Define a schema for the environment variables
