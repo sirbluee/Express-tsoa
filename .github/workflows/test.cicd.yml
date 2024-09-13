@@ -8,56 +8,58 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Specifies that the job should run on the latest Ubuntu virtual environment provided by GitHub
+    runs-on: ubuntu-latest # Specifies the environment to run the job
     defaults:
       run:
         working-directory: "." # Adjust this to the root directory of your Node.js project
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # This step checks out your repository under $GITHUB_WORKSPACE, so your workflow can access it
+        uses: actions/checkout@v4 # Checks out your repository under $GITHUB_WORKSPACE
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4 # This step sets up a Node.js environment with a specified version
+        uses: actions/setup-node@v4 # Sets up the Node.js environment
         with:
-          node-version: "20" # Specify the Node.js version you require, e.g., '14', '16'
+          node-version: "20" # Specify the Node.js version you require
 
       - name: Install dependencies
-        run: yarn install # Runs yarn install to install all dependencies defined in your package.json
+        run: yarn install # Install dependencies
 
       - name: Run build
-        run: yarn build # Executes the build script defined in your package.json
+        run: yarn build # Build your project
 
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v4 # Archives build artifacts for use in later jobs or for deployment
+        uses: actions/upload-artifact@v4
         with:
-          name: build # Optionally change the name of the artifact
-          path: ./build # Adjust this to where your build outputs artifacts, e.g., './build'
+          name: build
+          path: ./build # Specify where your build outputs
+
   deploy:
-    runs-on: ubuntu-latest # Specifies that the job should run on the latest Ubuntu virtual environment provided by GitHub
-    needs: build # Specifies that this job needs the 'build' job to complete successfully before it starts
-    if: github.ref == 'refs/heads/main' # This job runs only if the push or PR merge is to the 'main' branch
+    runs-on: ubuntu-latest
+    needs: build # This job depends on the build job
+    if: github.ref == 'refs/heads/main' # Run only on the main branch
 
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v4 # Downloads artifacts from the build job
+        uses: actions/download-artifact@v4
         with:
-          name: build # The name of the artifact to download
-          path: ./build # The path to store the downloaded artifact
+          name: build # Download the build artifact
+          path: ./build # Download to the build directory
 
       - name: Prepare Deployment Directories
-        uses: appleboy/ssh-action@master # SSH into the server to prepare directories
+        uses: appleboy/ssh-action@master # SSH into the server
         with:
-          host: ${{ secrets.SERVER_IP }} # Server IP address from secrets
+          host: ${{ secrets.SERVER_IP }} # Server IP from GitHub secrets
           username: ${{ secrets.SERVER_USERNAME }} # Server username from secrets
           key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH private key from secrets
-          port: 22 # SSH port, usually 22
+          port: 22 # Default SSH port
           script: |
-            mkdir -p /home/ubuntu/apps/build  # Change to match your desire directory structure
-            mkdir -p /home/ubuntu/apps/build/configs  # For additional configuration files
+            mkdir -p /home/ubuntu/apps/build
+            mkdir -p /home/ubuntu/apps/build/configs
+          debug: true # Enable debug to troubleshoot SSH issues
 
       - name: Copy files to Server
-        uses: appleboy/scp-action@master # Copies files to the server using SCP
+        uses: appleboy/scp-action@master # SCP to copy build files to the server
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
@@ -65,10 +67,10 @@ jobs:
           port: 22
           source: "./build/*"
           target: "/home/ubuntu/apps/build"
-          strip_components: 1 # Adjust based on the directory depth of the source
+          strip_components: 1 # Adjust based on the directory structure
 
       - name: Create .env File
-        uses: appleboy/ssh-action@master # Creates an environment variable file on the server
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
@@ -77,29 +79,30 @@ jobs:
           script: |
             echo "NODE_ENV=production" > /home/ubuntu/apps/build/configs/.env.production
             echo "PORT=${{ secrets.PORT }}" >> /home/ubuntu/apps/build/configs/.env.production
-            echo "MONGODB_URL=${{ secrets.MONGODB_URL}}" >> /home/ubuntu/apps/build/configs/.env.production
+            echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> /home/ubuntu/apps/build/configs/.env.production
+          debug: true # Debug enabled for troubleshooting
 
       - name: Install Dependencies and Restart Application
-        uses: appleboy/ssh-action@master # Installs dependencies and restarts the application using a process manager
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Load the full user environment for non-interactive shells
+            # Load the environment for non-interactive shells
             source /home/ubuntu/.nvm/nvm.sh
             source /home/ubuntu/.profile
 
             cd /home/ubuntu/apps/build
             yarn install --production
-            # Assume PM2 is used, Replace with other command for other process manager
-            # Assume you have script for run start in production and restart in production
-            # Check if the PM2 process is running
+
+            # Check if the PM2 process is running, otherwise start it
             if pm2 show product-service > /dev/null; then
               echo "Application is running. Restarting..."
-              yarn restart
+              pm2 restart product-service
             else
               echo "Application is not running. Starting..."
-              yarn start
+              pm2 start product-service
             fi
+          debug: true # Enable debug for SSH action
