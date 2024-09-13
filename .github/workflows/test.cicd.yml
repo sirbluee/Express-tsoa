@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - "src/**"
+      - "configs/**"
   push:
     branches: [main]
     paths:
       - "src/**"
+      - "configs/**" # Add other directories if needed
 
 jobs:
   build:
