@@ -37,7 +37,9 @@ jobs:
 
       - name: Run tests
         env:
-          API_KEY: ${{ secrets.API_KEY }}
+          PORT: ${{ secrets.PORT }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
         run: yarn test # Running tests with Jest and TypeScript support
 
       - name: Archive build artifacts

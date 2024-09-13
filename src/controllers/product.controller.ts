@@ -47,7 +47,7 @@ export class ProductController extends Controller {
   }
 
   // get all products
-  	// Add this: the request might look like: /v1/products?page=1&limit=5&filter={"price":{"min": 2, "max":5}}&sort={"name": "desc"}
+  	// Add this: the request might look like: /v1/products?page=1&limit=5&filter={"price":{"min": 10, "max":2000}}&sort={"name": "desc"}
     @Get()
     public async getAllProducts(@Queries() queries: ProductGetAllRequest): Promise<ProductPaginatedResponse> {
       try {
