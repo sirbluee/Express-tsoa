@@ -92,8 +92,8 @@ jobs:
           port: 22
           script: |
             echo "NODE_ENV=production" > /home/ubuntu/apps/build/.env
-            echo "PORT=your_port_number" >> /home/ubuntu/apps/build/.env
-            echo "DATABASE_URL=your_database_url" >> /home/ubuntu/apps/build/.env
+            echo "PORT=${{ secrets.PORT }}" >> /home/ubuntu/apps/build/.env
+            echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> /home/ubuntu/apps/build/.env
 
       - name: Install Dependencies and Restart Application
         uses: appleboy/ssh-action@master # SSH into the server, install dependencies, and restart the application
