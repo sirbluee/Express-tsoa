@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.5",
+    "esbuild-plugin-copy": "^2.1.1",
     "express": "^4.19.2",
     "joi": "^17.13.3",
     "mongoose": "^8.6.1",
