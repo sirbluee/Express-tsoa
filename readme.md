@@ -97,6 +97,7 @@ jobs:
             export NVM_DIR="/home/ubuntu/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
+            # ------------
             # Ensure Node.js and NPM are installed
             if ! type node > /dev/null 2>&1; then
               echo "Node.js not found. Installing Node.js..."
