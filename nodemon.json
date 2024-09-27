@@ -3,5 +3,5 @@
       "src"
     ],
     "ext": "ts",
-    "exec": "ts-node src/server.ts"
+    "exec": "ts-node src/server.ts || ts-node /app/src/server.ts"
   }

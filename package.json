@@ -4,16 +4,23 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.654.0",
+    "aws-sdk": "^2.1691.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "esbuild-plugin-copy": "^2.1.1",
     "express": "^4.19.2",
     "joi": "^17.13.3",
+    "mongodb-memory-server": "^10.0.1",
     "mongoose": "^8.6.1",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "^3.0.1",
     "yup": "^1.4.0"
   },
   "scripts": {
     "test": "jest",
     "tsoa:gen": "tsoa spec && tsoa routes",
+    "dev1": "nodemon src/server.ts",
     "dev": "yarn tsoa:gen && nodemon src/server.ts",
     "build": "node build-script.js",
     "start:local": "pm2 restart ecosystem.config.local.js || pm2 start ecosystem.config.local.js",
@@ -23,18 +30,21 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^22.5.4",
+    "@types/jest": "^29.5.13",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.5.5",
+    "@types/supertest": "^6.0.2",
     "@types/swagger-ui-express": "^4.1.6",
     "@types/yup": "^0.29.14",
     "esbuild": "^0.23.1",
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
+    "supertest": "^7.0.0",
     "swagger-ui-express": "^5.0.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "tsoa": "^6.4.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }

@@ -18,12 +18,16 @@
 					"price": {
 						"type": "number",
 						"format": "double"
+					},
+					"image": {
+						"type": "string"
 					}
 				},
 				"required": [
 					"name",
 					"category",
-					"price"
+					"price",
+					"image"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -55,12 +59,17 @@
 					"price": {
 						"type": "number",
 						"format": "double"
+					},
+					"image": {
+						"type": "string",
+						"nullable": true
 					}
 				},
 				"required": [
 					"name",
 					"category",
-					"price"
+					"price",
+					"image"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -145,6 +154,9 @@
 					"price": {
 						"type": "number",
 						"format": "double"
+					},
+					"image": {
+						"type": "string"
 					}
 				},
 				"type": "object",

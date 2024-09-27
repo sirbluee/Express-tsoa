@@ -18,12 +18,16 @@
 					"price": {
 						"type": "number",
 						"format": "double"
+					},
+					"image": {
+						"type": "string"
 					}
 				},
 				"required": [
 					"name",
 					"category",
-					"price"
+					"price",
+					"image"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -55,6 +59,10 @@
 					"price": {
 						"type": "number",
 						"format": "double"
+					},
+					"image": {
+						"type": "string",
+						"nullable": true
 					}
 				},
 				"required": [
@@ -125,10 +133,20 @@
 						"format": "double"
 					},
 					"filter": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						]
 					},
 					"sort": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						]
 					}
 				},
 				"type": "object",
@@ -145,6 +163,9 @@
 					"price": {
 						"type": "number",
 						"format": "double"
+					},
+					"image": {
+						"type": "string"
 					}
 				},
 				"type": "object",
@@ -231,17 +252,13 @@
 						"in": "query",
 						"name": "filter",
 						"required": false,
-						"schema": {
-							"type": "string"
-						}
+						"schema": {}
 					},
 					{
 						"in": "query",
 						"name": "sort",
 						"required": false,
-						"schema": {
-							"type": "string"
-						}
+						"schema": {}
 					}
 				]
 			}

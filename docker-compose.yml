@@ -1,0 +1,62 @@
+# version: '3.8'
+
+# services:
+#   backend_sample:
+#     container_name: backend_sample_container
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.dev
+#     restart: always
+#     ports:
+#       - "3000:3000"
+#     env_file: ./src/configs/.env.development
+#     environment:
+#       - DOCKER_ENV=true
+
+#     volumes:
+#       - ./src:/app/src         # Hot reloading for code changes
+#       - app_data:/app/data      # Named volume to persist data
+#     command: "nodemon --legacy-watch --ext ts,json --exec ts-node /app/src/server.ts"
+
+# volumes:
+#   app_data:                     # This is the named volume, which will persist data
+
+
+version: '3.8'
+
+services:
+  backend_sample:
+    container_name: backend_sample_container
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file: ./src/configs/.env.development
+    environment:
+      - DOCKER_ENV=true
+      - MONGO_URI=mongodb+srv://mongo:mongo@cluster0.nwgl6.mongodb.net/ # Add MongoDB URI for the app to connect
+    volumes:
+      - ./src:/app/src         # Hot reloading for code changes
+      - app_data:/app/data      # Named volume to persist data
+    depends_on:
+      - mongo-container         # Ensure Mongo starts before the backend
+    command: "nodemon --legacy-watch --ext ts,json --exec ts-node /app/src/server.ts"
+
+  # mongo-container service
+  mongo-container:
+    image: mongo
+    container_name: mongo-container
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db     # Named volume to persist MongoDB data
+
+volumes:
+  app_data:                      # This is the named volume, which will persist app data
+  mongo_data:                    # Volume for MongoDB data

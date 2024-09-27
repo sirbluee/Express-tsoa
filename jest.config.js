@@ -7,4 +7,5 @@ module.exports = {
     '^.+\\.ts?$': 'ts-jest',  // Transforms TypeScript files with ts-jest
   },
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],  // Ignore these directories
+  setupFiles: ['<rootDir>/jest.setup.ts'],
 };

@@ -25,19 +25,19 @@ export class ProductService {
   // get all products
   async getAllProducts(queries: ProductGetAllRequest) {
     try {
-      const { page, limit, filter, sort } = queries
+      const { page, limit, filter, sort } = queries;
 
       const newQueries = {
         page,
         limit,
         filter: filter && JSON.parse(filter),
-        sort: sort && JSON.parse(sort)
-      }
-      const result = await productRepository.getAll(newQueries)
+        sort: sort && JSON.parse(sort),
+      };
+      const result = await productRepository.getAll(newQueries);
 
       return result;
     } catch (error) {
-      console.error(`ProductService - getAllProducts() method error: ${error}`)
+      console.error(`ProductService - getAllProducts() method error: ${error}`);
       throw error;
     }
   }

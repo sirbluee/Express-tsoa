@@ -32,3 +32,36 @@ dist/
 # Ignore OS-generated files
 .DS_Store
 Thumbs.db
+
+# Ignore coverage reports
+coverage/
+*.lcov
+*.lcov.info
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Ignore miscellaneous files
+*.swp
+*.swo
+*~
+
+# Ignore NPM package lock files
+package-lock.json
+yarn.lock
+
+# Ignore JetBrains Rider .NET project
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore storybook files (if using Storybook)
+storybook-static/
+
+# Ignore specific npm debug files
+npm-debug.log*

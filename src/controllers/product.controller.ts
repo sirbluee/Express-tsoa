@@ -1,4 +1,3 @@
-// src/controllers/product.controller.ts
 import {
   Controller,
   Route,
@@ -26,50 +25,44 @@ import { ProductPaginatedResponse } from "./types/product-response.types";
 export class ProductController extends Controller {
   @Post()
   @Response(201, "Created Success")
-  @Middlewares(validateRequest) // Add this local middleware to check the valid input
+  @Middlewares(validateRequest)
   public async createProduct(
     @Body() requestBody: ProductCreateRequest
   ): Promise<ProductResponse> {
+    this.setStatus(201); // Ensure 201 Created
     try {
       const newProduct = await productService.createProduct(requestBody);
-
       return {
         message: "success",
-        data: {
-          name: newProduct.name,
-          category: newProduct.category,
-          price: newProduct.price,
-        },
+        data: newProduct,
       };
     } catch (error) {
+      throw new Error("Error creating product");
+    }
+  }
+
+  @Get()
+  @Response(200)
+  public async getAllProducts(
+    @Queries() queries: ProductGetAllRequest
+  ): Promise<ProductPaginatedResponse> {
+    try {
+      const response = await productService.getAllProducts(queries);
+      return {
+        message: "success",
+        data: response, // Ensure response is properly structured
+      };
+    } catch (error) {
+      console.error(`ProductsController - getAllProducts() error: ${error}`);
       throw error;
     }
   }
 
-  // get all products
-  	// Add this: the request might look like: /v1/products?page=1&limit=5&filter={"price":{"min": 10, "max":2000}}&sort={"name": "desc"}
-    @Get()
-    public async getAllProducts(@Queries() queries: ProductGetAllRequest): Promise<ProductPaginatedResponse> {
-      try {
-        const response = await productService.getAllProducts(queries);
-  
-        return {
-          message: "success",
-          data: response
-        }
-  
-      } catch (error) {
-        console.error(`ProductsController - getAllProducts() method error: ${error}`)
-        throw error;
-      }
-    }
-
-  // get product by id
   @Get("{id}")
+  @Response(200)
   public async getItemById(@Path() id: string): Promise<ProductResponse> {
     try {
       const product = await productService.getProductById(id);
-
       return {
         message: "success",
         data: product,
@@ -78,7 +71,7 @@ export class ProductController extends Controller {
       throw error;
     }
   }
-  // delete product by id
+
   @Delete("{id}")
   @Response(204, "Delete Success")
   public async deleteItemById(@Path() id: string): Promise<void> {
@@ -89,19 +82,15 @@ export class ProductController extends Controller {
     }
   }
 
-  // update product by id
   @Put("{id}")
-  @Middlewares(validateRequest) // Add this local middleware to check the valid input
+  @Response(200, "Updated Success")
+  @Middlewares(validateRequest)
   public async updateItem(
     @Path() id: string,
     @Body() requestBody: ProductUpdateRequest
   ): Promise<ProductResponse> {
     try {
-      const updatedProduct = await productService.updateProduct(
-        id,
-        requestBody
-      );
-
+      const updatedProduct = await productService.updateProduct(id, requestBody);
       return { message: "success", data: updatedProduct };
     } catch (error) {
       throw error;
